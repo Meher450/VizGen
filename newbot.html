@@ -1,0 +1,652 @@
+<!-- Code-Line 364 is our api key, incase if i want to change -->
+<!-- Headers and divisons are starting from code line:::::159 to 230-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VizGen Pro - Data Visualization Design Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .glow-card {
+            box-shadow: 0 4px 20px -5px rgba(14, 165, 233, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .glow-card:hover {
+            box-shadow: 0 8px 30px -5px rgba(14, 165, 233, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .chat-bubble {
+            position: relative;
+            border-radius: 18px;
+        }
+        
+        .chat-bubble:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+        
+        .user-bubble:after {
+            right: -10px;
+            border-left-color: #0ea5e9;
+            border-right: 0;
+            border-bottom: 0;
+            margin-bottom: 10px;
+        }
+        
+        .assistant-bubble:after {
+            left: -10px;
+            border-right-color: #e0f2fe;
+            border-left: 0;
+            border-bottom: 0;
+            margin-bottom: 10px;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(224, 242, 254, 0.5);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(14, 165, 233, 0.5);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(2, 132, 199, 0.7);
+        }
+        
+        /* Code block styling */
+        pre {
+            background-color: #f8fafc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            border: 1px solid #e2e8f0;
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #334155;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background-color: #e0f2fe;
+            border: none;
+            border-radius: 4px;
+            padding: 2px 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .copy-btn:hover {
+            background-color: #bae6fd;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-primary-50 to-primary-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <!-- Header with animated gradient -->
+        <header class="text-center mb-12 relative overflow-hidden rounded-2xl bg-white glow-card p-8">
+            <div class="absolute inset-0 bg-gradient-to-r from-primary-400 to-secondary-500 opacity-10"></div>
+            <div class="relative z-10">
+                <div class="flex justify-center items-center mb-4">
+                    <div class="bg-gradient-to-r from-primary-600 to-secondary-600 p-3 rounded-full shadow-lg mr-4">
+                        <i class="fas fa-chart-line text-white text-2xl"></i>
+                    </div>
+                    <h1 class="text-4xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+                        VizGen Pro
+                    </h1>
+                </div>
+                <p class="text-lg text-primary-700 mb-2">Your AI-powered Data Visualization Design Assistant</p>
+                <p class="text-sm text-primary-500">Generate matplotlib and seaborn code for beautiful visualizations</p>
+                
+                <div class="mt-6 flex justify-center space-x-4">
+                    <div class="flex items-center bg-primary-50 px-3 py-1 rounded-full text-xs font-medium text-primary-700">
+                        <div class="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+                        Python Code
+                    </div>
+                    <div class="flex items-center bg-primary-50 px-3 py-1 rounded-full text-xs font-medium text-primary-700">
+                        <i class="fas fa-shield-alt text-xs mr-2 text-primary-600"></i>
+                        Best Practices
+                    </div>
+                    <div class="flex items-center bg-primary-50 px-3 py-1 rounded-full text-xs font-medium text-primary-700">
+                        <i class="fas fa-project-diagram text-xs mr-2 text-primary-600"></i>
+                        20+ Chart Types
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main chat container -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-8 glow-card">
+            <!-- Chat header with status bar -->
+            <div class="bg-gradient-to-r from-primary-600 to-secondary-600 text-white p-4 flex items-center">
+                <div class="flex items-center">
+                    <div class="relative">
+                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center mr-3">
+                            <i class="fas fa-robot text-primary-600"></i>
+                        </div>
+                        <div class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-green-400 border-2 border-white"></div>
+                    </div>
+                    <h2 class="text-lg font-semibold">Visualization Assistant</h2>
+                </div>
+                <div class="ml-auto flex space-x-2">
+                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                </div>
+            </div>
+            
+            <!-- Chat messages area -->
+            <div id="chat-container" class="h-[32rem] overflow-y-auto p-6 space-y-4 bg-gradient-to-b from-primary-50 to-white custom-scrollbar">
+                <!-- Welcome message -->
+                <div class="flex justify-start">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm max-w-[85%] chat-bubble assistant-bubble">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-primary-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-chart-pie text-primary-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-primary-800">VizGen Pro Assistant</h3>
+                                <p class="text-xs text-primary-500">Python Visualization Expert</p>
+                            </div>
+                        </div>
+                        <div class="text-primary-700">
+                            <p>Welcome to your data visualization assistant! I can help you with:</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1">
+                                <li>Generating <strong>matplotlib</strong> and <strong>seaborn</strong> code</li>
+                                <li>Choosing the <strong>right chart type</strong> for your data</li>
+                                <li>Customizing <strong>colors, labels, and styles</strong></li>
+                                <li>Explaining <strong>visualization best practices</strong></li>
+                                <li>Optimizing <strong>plot performance</strong></li>
+                            </ul>
+                            <div class="mt-4 bg-primary-50 border-l-4 border-primary-400 p-3 rounded-r">
+                                <p class="text-sm font-medium text-primary-800"><i class="fas fa-lightbulb mr-2 text-primary-600"></i> Try asking:</p>
+                                <p class="text-sm mt-1 italic text-primary-600">"
+"Create a seaborn barplot comparing sales by region"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chat input area -->
+            <div class="p-4 bg-white border-t border-primary-100">
+                <div class="flex gap-3">
+                    <div class="relative flex-1">
+                        <input type="text" id="user-input" 
+                            class="w-full p-4 pr-12 border-2 border-primary-200 rounded-xl focus:outline-none focus:border-primary-400 focus:ring-1 focus:ring-primary-100 transition-all"
+                            placeholder="Ask for visualization code (e.g. 'Heatmap for correlation matrix')"
+                            onkeypress="if(event.key === 'Enter') sendMessage()">
+                        <button onclick="clearChat()" class="absolute right-14 top-1/2 transform -translate-y-1/2 text-primary-400 hover:text-primary-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <button onclick="voiceInput()" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-primary-400 hover:text-primary-600">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                    </div>
+                    <button onclick="sendMessage()" 
+                        class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-6 py-3 rounded-xl hover:from-primary-600 hover:to-secondary-600 transition-all shadow-md hover:shadow-lg flex items-center">
+                        <i class="fas fa-paper-plane mr-2"></i> Send
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick action cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Popular charts card -->
+            <div class="bg-white p-6 rounded-2xl shadow-md glow-card">
+                <div class="flex items-center mb-4">
+                    <div class="bg-primary-100 p-2 rounded-lg mr-3">
+                        <i class="fas fa-chart-bar text-primary-600"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-primary-800">Common Visualizations</h3>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="quickStart('Generate a seaborn barplot comparing sales by region')" class="quick-btn">
+                        <div class="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center mr-2">
+                            <i class="fas fa-chart-bar text-blue-600 text-xs"></i>
+                        </div>
+                        Bar Plot
+                    </button>
+                    <button onclick="quickStart('Create a matplotlib line plot showing trend over time')" class="quick-btn">
+                        <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-2">
+                            <i class="fas fa-chart-line text-green-600 text-xs"></i>
+                        </div>
+                        Line Plot
+                    </button>
+                    <button onclick="quickStart('Generate a seaborn scatter plot with hue for categories')" class="quick-btn">
+                        <div class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center mr-2">
+                            <i class="fas fa-braille text-purple-600 text-xs"></i>
+                        </div>
+                        Scatter Plot
+                    </button>
+                    <button onclick="quickStart('Create a matplotlib histogram with custom bins')" class="quick-btn">
+                        <div class="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center mr-2">
+                            <i class="fas fa-chart-area text-yellow-600 text-xs"></i>
+                        </div>
+                        Histogram
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Advanced charts card -->
+            <div class="bg-white p-6 rounded-2xl shadow-md glow-card">
+                <div class="flex items-center mb-4">
+                    <div class="bg-primary-100 p-2 rounded-lg mr-3">
+                        <i class="fas fa-chart-pie text-primary-600"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-primary-800">Advanced Charts</h3>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="quickStart('Generate a seaborn heatmap for correlation matrix')" class="quick-btn">
+                        <div class="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center mr-2">
+                            <i class="fas fa-th text-red-600 text-xs"></i>
+                        </div>
+                        Heatmap
+                    </button>
+                    <button onclick="quickStart('Create a matplotlib boxplot with custom colors')" class="quick-btn">
+                        <div class="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center mr-2">
+                            <i class="fas fa-box text-indigo-600 text-xs"></i>
+                        </div>
+                        Box Plot
+                    </button>
+                    <button onclick="quickStart('Generate a seaborn violin plot with split option')" class="quick-btn">
+                        <div class="w-6 h-6 rounded-full bg-pink-100 flex items-center justify-center mr-2">
+                            <i class="fas fa-guitar text-pink-600 text-xs"></i>
+                        </div>
+                        Violin Plot
+                    </button>
+                    <button onclick="quickStart('Create a matplotlib pie chart with percentage labels')" class="quick-btn">
+                        <div class="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center mr-2">
+                            <i class="fas fa-chart-pie text-teal-600 text-xs"></i>
+                        </div>
+                        Pie Chart
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent updates card -->
+        <div class="bg-white p-6 rounded-2xl shadow-md glow-card mb-8">
+            <div class="flex items-center mb-4">
+                <div class="bg-primary-100 p-2 rounded-lg mr-3">
+                    <i class="fas fa-sync-alt text-primary-600"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-primary-800">Visualization Tips</h3>
+            </div>
+            <div class="space-y-3">
+                <button onclick="quickStart('What are best practices for choosing chart colors?')" class="update-btn">
+                    <div class="pulse bg-blue-500 w-2 h-2 rounded-full mr-3"></div>
+                    <span>Color Selection</span>
+                    <i class="fas fa-chevron-right ml-auto text-primary-400"></i>
+                </button>
+                <button onclick="quickStart('How to make matplotlib plots more publication quality?')" class="update-btn">
+                    <div class="pulse bg-green-500 w-2 h-2 rounded-full mr-3"></div>
+                    <span>Publication Quality</span>
+                    <i class="fas fa-chevron-right ml-auto text-primary-400"></i>
+                </button>
+                <button onclick="quickStart('What are the differences between matplotlib and seaborn?')" class="update-btn">
+                    <div class="pulse bg-purple-500 w-2 h-2 rounded-full mr-3"></div>
+                    <span>Matplotlib vs Seaborn</span>
+                    <i class="fas fa-chevron-right ml-auto text-primary-400"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer with disclaimer -->
+        <footer class="text-center text-sm text-primary-600 bg-white/50 backdrop-blur-sm p-4 rounded-xl">
+            <p><i class="fas fa-info-circle mr-1"></i> Generated code may require adjustments based on your specific data structure.</p>
+            <p class="mt-1">© 2023 VizGen Pro. All rights reserved. <span class="text-primary-400">v2.1.0</span></p>
+        </footer>
+    </div>
+
+    <script>
+        const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+        const API_KEY = 'AIzaSyCeFa3ryVeNeaXBxjYifwZRFlJCttEkdUI'; // Replace with your actual API key
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+
+        // System prompt to guide the AI responses
+        const SYSTEM_PROMPT = `You are VizGen Pro, an expert in Python data visualization using matplotlib and seaborn. 
+        Your task is to generate clean, efficient, and well-commented Python code for creating visualizations.
+        Follow these guidelines:
+
+        1. Always provide complete Python code snippets with imports
+        2. Use best practices for visualization (proper labels, titles, legends)
+        3. Include comments explaining key steps
+        4. Suggest appropriate chart types based on the request
+        5. Provide both matplotlib and seaborn options when applicable
+        6. Explain visualization choices and best practices
+        7. Format code blocks properly with syntax highlighting
+        
+        Structure responses with these sections when applicable:
+        
+        **Recommended Chart**: 
+        - Explain why this chart type is appropriate
+        - Mention alternatives if relevant
+        
+        **Code Solution**:
+        - Complete Python code with imports
+        - Well-commented and formatted
+        - Use either matplotlib or seaborn as appropriate
+        
+        **Customization Options**:
+        - Suggest ways to modify the visualization
+        - Include color schemes, annotations, etc.
+        
+        **Best Practices**:
+        - Explain why this is a good approach
+        - Mention potential pitfalls to avoid
+        
+        Be professional, concise and accurate. Format with clear headings and bullet points.`;
+
+        async function sendMessage() {
+            const userMessage = userInput.value.trim();
+            if (!userMessage) return;
+
+            addMessageToChat(userMessage, 'user');
+            userInput.value = '';
+            
+            // Show typing indicator
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'flex justify-start';
+            typingIndicator.innerHTML = `
+                <div class="bg-white p-4 rounded-2xl shadow-sm max-w-[85%] chat-bubble assistant-bubble">
+                    <div class="flex items-center">
+                        <div class="bg-primary-100 p-2 rounded-full mr-3 animate-pulse">
+                            <i class="fas fa-ellipsis-h text-primary-600"></i>
+                        </div>
+                        <span class="text-primary-600 font-medium">Creating visualization code...</span>
+                    </div>
+                </div>
+            `;
+            chatContainer.appendChild(typingIndicator);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            try {
+                const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: `${SYSTEM_PROMPT}\n\nUser request: ${userMessage}`
+                            }]
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                console.log("API Response:", data);
+
+                // Remove typing indicator
+                chatContainer.removeChild(typingIndicator);
+
+                const assistantMessage = data.candidates?.[0]?.content?.parts?.[0]?.text || 
+                    "⚠️ I couldn't generate visualization code at this time. Please try again later.";
+                
+                // Format the response with proper sections and styling
+                const formattedResponse = formatVisualizationResponse(assistantMessage);
+                addMessageToChat(formattedResponse, 'assistant');
+            } catch (error) {
+                console.error('Error:', error);
+                // Remove typing indicator
+                chatContainer.removeChild(typingIndicator);
+                addMessageToChat(`
+                    <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-r mb-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
+                            <strong class="text-red-700">Connection Error</strong>
+                        </div>
+                        <p class="text-red-600 mt-1">We couldn't connect to the code generator. Please try again later.</p>
+                    </div>
+                `, 'error');
+            }
+        }
+
+        function formatVisualizationResponse(text) {
+            // Format code blocks
+            let formatted = text.replace(/```python([\s\S]*?)```/g, function(match, code) {
+                const uniqueId = 'code-' + Math.random().toString(36).substr(2, 9);
+                return `
+                <div class="relative">
+                    <button onclick="copyToClipboard('${uniqueId}')" class="copy-btn">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <pre id="${uniqueId}"><code>${code.trim()}</code></pre>
+                </div>
+                `;
+            });
+            
+            // Format sections with headers
+            formatted = formatted
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold text
+                .replace(/\n/g, '<br>') // Line breaks
+                .replace(/Recommended Chart:/gi, '<div class="section-title"><i class="fas fa-chart-bar mr-2"></i>Recommended Chart</div>')
+                .replace(/Code Solution:/gi, '<div class="section-title"><i class="fas fa-code mr-2"></i>Code Solution</div>')
+                .replace(/Customization Options:/gi, '<div class="section-title"><i class="fas fa-sliders-h mr-2"></i>Customization Options</div>')
+                .replace(/Best Practices:/gi, '<div class="section-title"><i class="fas fa-check-circle mr-2"></i>Best Practices</div>');
+            
+            // Format lists
+            formatted = formatted.replace(/- (.*?)(<br>|$)/g, '<li class="ml-5 pl-2">$1</li>');
+            formatted = formatted.replace(/<li/g, '<ul class="list-disc pl-5 space-y-2 my-2"><li');
+            formatted = formatted.replace(/<\/li>/g, '</li></ul>');
+            
+            return formatted;
+        }
+
+        function copyToClipboard(elementId) {
+            const codeElement = document.getElementById(elementId);
+            const range = document.createRange();
+            range.selectNode(codeElement);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            
+            // Show copied notification
+            const notification = document.createElement('div');
+            notification.className = 'absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded';
+            notification.textContent = 'Copied!';
+            codeElement.parentNode.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
+        async function quickStart(query) {
+            userInput.value = query;
+            await sendMessage();
+        }
+
+        function addMessageToChat(message, role) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex justify-${role === 'user' ? 'end' : 'start'} mb-4`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = `p-5 rounded-2xl max-w-[85%] shadow-sm chat-bubble ${
+                role === 'user' ? 'bg-primary-600 text-white user-bubble' : 
+                role === 'error' ? 'bg-red-50 text-red-800' : 'bg-white text-primary-700 assistant-bubble'
+            }`;
+            
+            if (role === 'user') {
+                contentDiv.innerHTML = `
+                    <div class="flex items-center mb-3">
+                        <div class="bg-primary-700 p-2 rounded-full mr-3">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold">You</h3>
+                        </div>
+                    </div>
+                    <div class="message-content">
+                        ${message}
+                    </div>
+                `;
+            } else {
+                contentDiv.innerHTML = `
+                    <div class="flex items-center mb-3">
+                        <div class="bg-primary-100 p-2 rounded-full mr-3">
+                            <i class="fas fa-chart-line text-primary-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-primary-800">VizGen Assistant</h3>
+                            <p class="text-xs text-primary-500">Python Visualization Expert</p>
+                        </div>
+                    </div>
+                    <div class="message-content">
+                        ${role === 'error' ? message : formatVisualizationResponse(message)}
+                    </div>
+                `;
+            }
+            
+            messageDiv.appendChild(contentDiv);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function clearChat() {
+            chatContainer.innerHTML = `
+                <div class="flex justify-start">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm max-w-[85%] chat-bubble assistant-bubble">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-primary-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-chart-pie text-primary-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-primary-800">VizGen Pro Assistant</h3>
+                                <p class="text-xs text-primary-500">Python Visualization Expert</p>
+                            </div>
+                        </div>
+                        <div class="text-primary-700">
+                            <p>Welcome back! What visualization can I help you create today?</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function voiceInput() {
+            alert("Voice input would be implemented here in a production app");
+            // In a real implementation, this would use the Web Speech API
+        }
+    </script>
+
+    <style>
+        .quick-btn {
+            background-color: white;
+            color: #0c4a6e;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border: 1px solid #e0f2fe;
+            text-align: left;
+        }
+        .quick-btn:hover {
+            background-color: #e0f2fe;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.1);
+        }
+        
+        .update-btn {
+            background-color: white;
+            color: #0c4a6e;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            border: 1px solid #e0f2fe;
+            width: 100%;
+        }
+        .update-btn:hover {
+            background-color: #f0f9ff;
+            transform: translateX(2px);
+        }
+        
+        .section-title {
+            font-weight: 600;
+            color: #075985;
+            margin: 1rem 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .message-content ul {
+            margin: 0.5rem 0;
+        }
+        
+        .message-content li {
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</body>
+</html>
