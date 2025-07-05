@@ -77,6 +77,6 @@ Here is the glimpse of the interface and a working demo video
 
 ![UI](Demo/VizGen.png)
 
-[working model](./Demo/vinzen.mp4)
+[Working Demo Video](./Demo/)
 
 ```
