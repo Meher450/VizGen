@@ -72,4 +72,10 @@ This project is licensed under the [MIT License](LICENSE).
 ---
 
 > 🔥 Ready to take your visualizations to the next level with the power of AI!
+
+Here is the glimpse of the interface and a working demo video
+
+![UI](VizGen.png)
+
+
 ```
