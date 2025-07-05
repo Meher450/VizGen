@@ -75,7 +75,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 Here is the glimpse of the interface and a working demo video
 
-![UI](VizGen.png)
+![UI](Demp/VizGen.png)
 
 
 ```
