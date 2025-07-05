@@ -75,7 +75,8 @@ This project is licensed under the [MIT License](LICENSE).
 
 Here is the glimpse of the interface and a working demo video
 
-![UI](Demp/VizGen.png)
+![UI](Demo/VizGen.png)
 
+![working model](Demo/vinzen.mp4)
 
 ```
