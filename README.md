@@ -1,6 +1,6 @@
 # 🚀 VizGen Pro – AI-powered Data Visualization Design Assistant
 
-**VizGen Pro** is an intelligent web application that helps users generate clean, well-commented Python code for data visualizations using libraries like **matplotlib** and **seaborn**. Powered by the **Gemini 2.0 API**, it simplifies the process of designing professional visualizations with guidance on best practices, chart types, and more.
+**VizGen Pro** is an intelligent web application that helps users generate clean, well-commented Python code for data visualizations using libraries like **matplotlib** and **seaborn**. Powered by the **Gemini 2.0 API**, it simplifies the process of designing professional visualizations with guidance on best practices, chart types, and more. [View UI here](https://meher450.github.io/VizGen/VizGen.html)
 
 ---
 
