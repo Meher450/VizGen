@@ -79,4 +79,5 @@ Here is the glimpse of the interface and a working demo video
 
 [Working Demo Video](./Demo/)
 
+[You can watch the Demo App here](https://meher450.github.io/VizGen/VizGen.html)
 ```
